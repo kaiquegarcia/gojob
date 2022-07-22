@@ -1,5 +1,7 @@
 package main
 
+import "context"
+
 // NewConfig instances a config struct to call gojob.NewQueue
 func NewConfig(processor Processor, opts ...option) *config {
 	conf := defaultConfig(processor)
@@ -33,18 +35,31 @@ func WithMaxQueueSize(size int) option {
 	}
 }
 
+// WithContextMiddleware sets the function responsible to add more values to the context generated before calling the processor in workers
+func WithContextMiddleware(contextMiddleware ContextMiddleware) option {
+	return func(c *config) {
+		c.contextMiddleware = contextMiddleware
+	}
+}
+
 func defaultConfig(processor Processor) *config {
 	return &config{
-		workersCount: 5,
-		maxQueueSize: 100,
-		jobProcessor: processor,
+		workersCount:      5,
+		maxQueueSize:      100,
+		jobProcessor:      processor,
+		contextMiddleware: defaultContextMiddleware,
 	}
 }
 
 type config struct {
-	jobProcessor Processor
-	workersCount int
-	maxQueueSize int
+	jobProcessor      Processor
+	workersCount      int
+	maxQueueSize      int
+	contextMiddleware ContextMiddleware
 }
 
 type option func(*config)
+
+var defaultContextMiddleware = func(ctx context.Context) context.Context {
+	return ctx
+}

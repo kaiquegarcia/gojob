@@ -20,7 +20,7 @@ func NewQueue(conf *config) *Queue {
 	}
 
 	for number := 0; number < conf.workersCount; number++ {
-		worker := newWorker(number, pool.workerPool, conf.jobProcessor, conf.maxQueueSize)
+		worker := newWorker(number, pool.workerPool, conf.jobProcessor, conf.contextMiddleware, conf.maxQueueSize)
 		worker.start()
 	}
 
