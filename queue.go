@@ -3,7 +3,7 @@ package main
 // Queue represents a worker pool manager. It instances a count of workers you defined in config file with internal queues.
 // Each worker have its own internal queue, so becareful when deciding how many workers you want to instance versus how many payloads each one can stack in his queue.
 // Example of usage:
-// config := gojob.NewConfig(func (payload interface{}) { log.Println(payload) })
+// config := gojob.NewConfig(func (ctx context.Context, payload interface{}) { log.Println(payload) })
 // queue := gojob.NewQueue(config)
 // ...
 // queue.Enqueue("my payload")
@@ -19,8 +19,8 @@ func NewQueue(conf *config) *Queue {
 		jobPool:    make(jobPool, conf.workersCount*conf.maxQueueSize),
 	}
 
-	for count := 0; count < conf.workersCount; count++ {
-		worker := newWorker(pool.workerPool, conf.jobProcessor, conf.maxQueueSize)
+	for number := 0; number < conf.workersCount; number++ {
+		worker := newWorker(number, pool.workerPool, conf.jobProcessor, conf.maxQueueSize)
 		worker.start()
 	}
 

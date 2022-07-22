@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"sync"
 )
@@ -10,7 +11,7 @@ func main() {
 	wg := &sync.WaitGroup{}
 	wg.Add(loops)
 
-	processor := func(payload interface{}) {
+	processor := func(ctx context.Context, payload interface{}) {
 		log.Println("Processing ", payload)
 		wg.Done()
 	}
