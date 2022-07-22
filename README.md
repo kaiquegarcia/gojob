@@ -64,7 +64,7 @@ queue.Enqueue("my-payload", gojob.WithContextMiddleware(func (ctx context.Contex
 
 So if you're going to add some job from a web request, you can inject your Request ID to the JobProcessor, then you can track it in your logs.
 
-I'm still working in more examples, so feel free to [contact me](https://twitter.com/kaiquegarcia) if you want to know more about this project.
+I'm still working in more examples, so feel free to [contact me](https://twitter.com/kg_thebest) if you want to know more about this project.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
