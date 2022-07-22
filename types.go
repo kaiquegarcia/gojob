@@ -13,9 +13,5 @@ const WorkerNumberKey workNumber = iota
 
 type workNumber int
 
-type job struct {
-	payload interface{}
-}
-
 type jobPool chan job
 type workerPool chan jobPool

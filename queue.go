@@ -1,5 +1,7 @@
 package main
 
+import "context"
+
 // Queue represents a worker pool manager. It instances a count of workers you defined in config file with internal queues.
 // Each worker have its own internal queue, so becareful when deciding how many workers you want to instance versus how many payloads each one can stack in his queue.
 // Example of usage:
@@ -13,14 +15,14 @@ type Queue struct {
 }
 
 // NewQueue instances a new Queue with the desired configuration
-func NewQueue(conf *config) *Queue {
+func NewQueue(conf *queueConfig) *Queue {
 	pool := &Queue{
 		workerPool: make(workerPool, conf.workersCount),
 		jobPool:    make(jobPool, conf.workersCount*conf.maxQueueSize),
 	}
 
 	for number := 0; number < conf.workersCount; number++ {
-		worker := newWorker(number, pool.workerPool, conf.jobProcessor, conf.contextMiddleware, conf.maxQueueSize)
+		worker := newWorker(number, pool.workerPool, conf.jobProcessor, conf.maxQueueSize)
 		worker.start()
 	}
 
@@ -30,8 +32,15 @@ func NewQueue(conf *config) *Queue {
 }
 
 // Enqueue adds a payload to the jobPool, so one of the instanced workers will process it
-func (pool *Queue) Enqueue(payload interface{}) {
-	pool.jobPool <- job{payload}
+func (pool *Queue) Enqueue(payload interface{}, opts ...jobOption) {
+	j := job{
+		payload:           payload,
+		contextMiddleware: defaultContextMiddleware,
+	}
+	for index := 0; index < len(opts); index++ {
+		opts[index](&j)
+	}
+	pool.jobPool <- j
 }
 
 func (pool *Queue) dispatch() {
@@ -41,4 +50,8 @@ func (pool *Queue) dispatch() {
 			worker <- j
 		}(j)
 	}
+}
+
+var defaultContextMiddleware = func(ctx context.Context) context.Context {
+	return ctx
 }
