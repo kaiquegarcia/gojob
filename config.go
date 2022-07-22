@@ -1,16 +1,7 @@
 package main
 
-import "github.com/kaiquegarcia/gojob/internal/job"
-
-type config struct {
-	JobProcessor job.Processor
-	WorkersCount int
-	MaxQueueSize int
-}
-
-type option func(*config)
-
-func NewConfig(processor job.Processor, opts ...option) *config {
+// NewConfig instances a config struct to call gojob.NewQueue
+func NewConfig(processor Processor, opts ...option) *config {
 	conf := defaultConfig(processor)
 
 	for index := 0; index < len(opts); index++ {
@@ -20,22 +11,40 @@ func NewConfig(processor job.Processor, opts ...option) *config {
 	return conf
 }
 
+// WithWorkersCount sets the number of workers the queue with this config should instance
 func WithWorkersCount(count int) option {
+	if count <= 0 {
+		panic("invalid workers count")
+	}
+
 	return func(c *config) {
-		c.WorkersCount = count
+		c.workersCount = count
 	}
 }
 
+// WithMaxQueueSize sets the limit of payloads each worker in the queue with this config should accept
 func WithMaxQueueSize(size int) option {
+	if size <= 0 {
+		panic("invalid queue size limit")
+	}
+
 	return func(c *config) {
-		c.MaxQueueSize = size
+		c.maxQueueSize = size
 	}
 }
 
-func defaultConfig(processor job.Processor) *config {
+func defaultConfig(processor Processor) *config {
 	return &config{
-		WorkersCount: 5,
-		MaxQueueSize: 100,
-		JobProcessor: processor,
+		workersCount: 5,
+		maxQueueSize: 100,
+		jobProcessor: processor,
 	}
 }
+
+type config struct {
+	jobProcessor Processor
+	workersCount int
+	maxQueueSize int
+}
+
+type option func(*config)

@@ -17,7 +17,7 @@ func main() {
 
 	conf := NewConfig(processor, WithWorkersCount(5), WithMaxQueueSize(100))
 
-	queue := NewJobQueue(conf)
+	queue := NewQueue(conf)
 
 	log.Println("starting loop")
 	for i := 0; i < loops; i++ {
