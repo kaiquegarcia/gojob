@@ -7,7 +7,7 @@ GoJob is a helper made to turn it easy to make queues/jobs in Golang. Specially 
 Just call this command in the root path of your Golang project:
 
 ```bash
-go get github.com/kaiquegarcia/gojob
+go get github.com/kaiquegarcia/gojob/pkg/queue
 ```
 
 ## Usage
@@ -24,40 +24,44 @@ func MyJobProcessor(ctx context.Context, payload interface{}) {
 }
 ```
 
-Then you need to configure your queue using the `NewQueueConfig` function:
+Then you need to instance your queue using the `queue.New()` function:
 
 ```go
-import "github.com/kaiquegarcia/gojob"
+import "github.com/kaiquegarcia/gojob/pkg/queue"
 
-config := gojob.NewQueueConfig(MyJobProcessor)
+q := queue.New(MyJobProcessor)
 ```
 
 Please note you can add more configurations using the functions `WithWorkerCount` and `WithMaxQueueSize` to change the default values. Maybe I can add more configurations, but that's all for today, let's get back to the point...
 
 Each queue should have different purposes, 'cause they'll instance workers to process each job you add to the queue, so if you want to add an "emailJob" and a "smsJob", for example, they will be different queues.
 
-To instance a queue, call `NewConfig` function:
-
 ```go
-import "github.com/kaiquegarcia/gojob"
+import "github.com/kaiquegarcia/gojob/pkg/queue"
 
-queue := gojob.NewQueue(config)
+emailQueue := queue.New(MyEmailJobProcessor)
+smsQueue := queue.New(MySMSJobProcessor)
 ```
 
 The last part is to send jobs to the queue. It's simple, just call `Enqueue` method:
 
 ```go
-queue.Enqueue("my-payload")
+import "github.com/kaiquegarcia/gojob/pkg/queue"
+
+q := queue.New(MyJobProcessor)
+q.Enqueue("my-payload")
 ```
 
-Please note you can also add options with the payload. For example, to inject fields in the context before calling `MyJobProcessor`, I can do this:
+Please note you can also add options with the payload as well. For example, to inject fields in the context before calling `MyJobProcessor`, I can do this:
 ```go
-import "github.com/kaiquegarcia/gojob"
+import "github.com/kaiquegarcia/gojob/pkg/queue"
+
+q := queue.New(MyJobProcessor)
 
 type myCtxKeyType int
 const myCtxKey myCtxKeyType = iota
 
-queue.Enqueue("my-payload", gojob.WithContextMiddleware(func (ctx context.Context) context.Context {
+q.Enqueue("my-payload", queue.WithContextMiddleware(func (ctx context.Context) context.Context {
     return ctx.WithValue(ctx, myCtxKey, "my-ctx-value")
 }))
 ```
@@ -74,6 +78,7 @@ Please make sure to update tests as appropriate.
 
 ## Roadmap
 
+- Better resource management;
 - Create `context.go` file to expose a function `WorkerNumberFromCtx(ctx context.Context) int` as a helper to extract the valeu from the context;
 - Migrate context logic to `context.go` file in a function `prepareWorkerCtx(workerNumber int)`;
 - Create helper function `WithCtxValue` to do the hard work instead of calling `WithContextMiddleware`;
