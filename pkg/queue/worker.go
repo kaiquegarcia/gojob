@@ -22,7 +22,7 @@ func (w worker) start() {
 }
 
 func (w worker) processJob(j job) {
-	ctx := context.WithValue(context.Background(), WorkerNumberKey, w.number)
+	ctx := ctxWithWorkerNumber(context.Background(), w.number)
 	defer w.handlePanic(&ctx)
 	w.processor(j.contextMiddleware(ctx), j.payload)
 	ctx.Done()

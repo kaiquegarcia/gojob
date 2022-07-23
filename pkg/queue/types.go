@@ -11,10 +11,5 @@ type ContextMiddleware func(ctx context.Context) context.Context
 // PanicHandler is the function responsible to deal with panics in workers
 type PanicHandler func(ctx context.Context, recoveredPanic interface{})
 
-// WorkerNumberKey is the key to retrieve the worker number from the context, in the processor func
-const WorkerNumberKey workNumber = iota
-
-type workNumber int
-
 type jobPool chan job
 type workerPool chan jobPool
