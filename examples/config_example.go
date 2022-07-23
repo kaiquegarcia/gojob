@@ -1,12 +1,14 @@
-package main
+package examples
 
 import (
 	"context"
 	"log"
 	"sync"
+
+	"github.com/kaiquegarcia/gojob/pkg/queue"
 )
 
-func main() {
+func ConfigExample() {
 	loops := 100
 	wg := &sync.WaitGroup{}
 	wg.Add(loops)
@@ -16,13 +18,13 @@ func main() {
 		wg.Done()
 	}
 
-	conf := NewQueueConfig(processor, WithWorkersCount(5), WithMaxQueueSize(100))
+	conf := queue.NewConfig(processor, queue.WithWorkersCount(5), queue.WithMaxQueueSize(100))
 
-	queue := NewQueue(conf)
+	q := queue.New(conf)
 
 	log.Println("starting loop")
 	for i := 0; i < loops; i++ {
-		queue.Enqueue(i, WithContextMiddleware(func(ctx context.Context) context.Context {
+		q.Enqueue(i, queue.WithContextMiddleware(func(ctx context.Context) context.Context {
 			type myKeyType int
 			const myKey myKeyType = iota
 			return context.WithValue(ctx, myKey, "my-value")

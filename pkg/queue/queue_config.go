@@ -1,7 +1,7 @@
-package main
+package queue
 
-// NewQueueConfig instances a config struct to call gojob.NewQueue
-func NewQueueConfig(processor Processor, opts ...queueOption) *queueConfig {
+// NewConfig instances a config struct to call gojob.NewQueue
+func NewConfig(processor Processor, opts ...queueOption) *queueConfig {
 	conf := defaultQueueConfig(processor)
 
 	for index := 0; index < len(opts); index++ {

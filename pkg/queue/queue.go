@@ -1,4 +1,4 @@
-package main
+package queue
 
 import "context"
 
@@ -14,8 +14,8 @@ type Queue struct {
 	jobPool    jobPool
 }
 
-// NewQueue instances a new Queue with the desired configuration
-func NewQueue(conf *queueConfig) *Queue {
+// New instances a new Queue with the desired configuration
+func New(conf *queueConfig) *Queue {
 	pool := &Queue{
 		workerPool: make(workerPool, conf.workersCount),
 		jobPool:    make(jobPool, conf.workersCount*conf.maxQueueSize),
