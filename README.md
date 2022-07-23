@@ -1,6 +1,6 @@
 # GoJob
 
-GoJob is a helper made to turn it easy to make queues/jobs in Golang. Specially inspired in [this article](http://marcio.io/2015/07/handling-1-million-requests-per-minute-with-golang/) suggested by one my partners at Kavak.
+GoJob is a helper made to turn it easy to make queues/jobs in Golang. Especially inspired by [this article](http://marcio.io/2015/07/handling-1-million-requests-per-minute-with-golang/) suggested by one of my partners at Kavak.
 
 ## Installation
 
@@ -68,7 +68,7 @@ q.Enqueue("my-payload", queue.WithContextMiddleware(func (ctx context.Context) c
 
 So if you're going to add some job from a web request, you can inject your Request ID to the JobProcessor, then you can track it in your logs.
 
-I'm still working in more examples, so feel free to [contact me](https://twitter.com/kg_thebest) if you want to know more about this project.
+I'm still working on more examples, so feel free to [contact me](https://twitter.com/kg_thebest) if you want to know more about this project.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
@@ -79,11 +79,11 @@ Please make sure to update tests as appropriate.
 ## Roadmap
 
 - Better resource management;
-- Create `context.go` file to expose a function `WorkerNumberFromCtx(ctx context.Context) int` as a helper to extract the valeu from the context;
+- Create `context.go` file to expose a function `WorkerNumberFromCtx(ctx context.Context) int` as a helper to extract the value from the context;
 - Migrate context logic to `context.go` file in a function `prepareWorkerCtx(workerNumber int)`;
 - Create helper function `WithCtxValue` to do the hard work instead of calling `WithContextMiddleware`;
 - Add more use cases;
-- Prepare a FAQ (if its possible).
+- Prepare a FAQ (if it's possible).
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)

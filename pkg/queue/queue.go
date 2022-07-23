@@ -3,8 +3,7 @@ package queue
 // Queue represents a worker pool manager. It instances a count of workers you defined in config file with internal queues.
 // Each worker have its own internal queue, so becareful when deciding how many workers you want to instance versus how many payloads each one can stack in his queue.
 // Example of usage:
-// config := gojob.NewConfig(func (ctx context.Context, payload interface{}) { log.Println(payload) })
-// queue := gojob.NewQueue(config)
+// queue := queue.New(func (ctx context.Context, payload interface{}) { log.Println(payload) })
 // ...
 // queue.Enqueue("my payload")
 type Queue struct {
