@@ -18,9 +18,7 @@ func ConfigExample() {
 		wg.Done()
 	}
 
-	conf := queue.NewConfig(processor, queue.WithWorkersCount(5), queue.WithMaxQueueSize(100))
-
-	q := queue.New(conf)
+	q := queue.New(processor, queue.WithWorkersCount(5), queue.WithMaxQueueSize(100))
 
 	log.Println("starting loop")
 	for i := 0; i < loops; i++ {
