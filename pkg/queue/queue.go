@@ -18,11 +18,17 @@ func New(processor Processor, opts ...queueOption) *Queue {
 
 	pool := &Queue{
 		workerPool: make(workerPool, conf.workersCount),
-		jobPool:    make(jobPool, conf.workersCount*conf.maxQueueSize),
+		jobPool:    make(jobPool),
 	}
 
 	for number := 0; number < conf.workersCount; number++ {
-		worker := newWorker(number, pool.workerPool, conf.jobProcessor, conf.maxQueueSize)
+		worker := worker{
+			number:       number,
+			workerPool:   pool.workerPool,
+			jobChannel:   make(jobPool, conf.maxQueueSize),
+			processor:    conf.jobProcessor,
+			panicHandler: conf.panicHandler,
+		}
 		worker.start()
 	}
 

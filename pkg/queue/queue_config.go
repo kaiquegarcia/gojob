@@ -1,5 +1,10 @@
 package queue
 
+import (
+	"context"
+	"log"
+)
+
 func newConfig(processor Processor, opts ...queueOption) *queueConfig {
 	conf := defaultQueueConfig(processor)
 
@@ -32,16 +37,27 @@ func WithMaxQueueSize(size int) queueOption {
 	}
 }
 
+// WithPanicHandler define what each worker of the queue should do if it recovers from panic
+func WithPanicHandler(panicHandler PanicHandler) queueOption {
+	return func(c *queueConfig) {
+		c.panicHandler = panicHandler
+	}
+}
+
 func defaultQueueConfig(processor Processor) *queueConfig {
 	return &queueConfig{
 		workersCount: 5,
 		maxQueueSize: 100,
 		jobProcessor: processor,
+		panicHandler: func(ctx context.Context, recoveredPanic interface{}) {
+			log.Printf("worker recovered from panic: %v\n", recoveredPanic)
+		},
 	}
 }
 
 type queueConfig struct {
 	jobProcessor Processor
+	panicHandler PanicHandler
 	workersCount int
 	maxQueueSize int
 }
