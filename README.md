@@ -79,8 +79,6 @@ Please make sure to update tests as appropriate.
 ## Roadmap
 
 - Better resource management;
-- Create `context.go` file to expose a function `WorkerNumberFromCtx(ctx context.Context) int` as a helper to extract the value from the context;
-- Migrate context logic to `context.go` file in a function `prepareWorkerCtx(workerNumber int)`;
 - Create helper function `WithCtxValue` to do the hard work instead of calling `WithContextMiddleware`;
 - Add more use cases;
 - Prepare a FAQ (if it's possible).
