@@ -23,16 +23,16 @@ func (w worker) start() {
 
 func (w worker) processJob(j job) {
 	ctx := ctxWithWorkerNumber(context.Background(), w.number)
-	defer w.handlePanic(&ctx)
-	w.processor(j.contextMiddleware(ctx), j.payload)
-	ctx.Done()
+	ctx = j.contextMiddleware(ctx)
+	defer w.handlePanic(ctx)
+	w.processor(ctx, j.payload)
 }
 
-func (w worker) handlePanic(ctx *context.Context) {
+func (w worker) handlePanic(ctx context.Context) {
 	recoveredPanic := recover()
 	if recoveredPanic == nil {
 		return
 	}
 
-	w.panicHandler(*ctx, recoveredPanic)
+	w.panicHandler(ctx, recoveredPanic)
 }
